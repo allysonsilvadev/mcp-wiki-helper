@@ -57,22 +57,26 @@ export class GitSyncService {
     }
   }
 
-  public startPeriodicSynchronization(): NodeJS.Timeout {
-  const intervalMs = env.wiki.syncIntervalMs;
+  public startPeriodicSynchronization(
+    onSynchronized?: () => Promise<void>
+  ): NodeJS.Timeout {
+    console.error(
+      `[GitSyncService] Sincronização periódica configurada para ${env.wiki.syncIntervalMs} ms.`
+    );
 
-  console.error(
-    `[GitSyncService] Sincronização periódica configurada para ${intervalMs / 60_000} minutos.`
-  );
-
-  return setInterval(() => {
-    void this.synchronize().catch((error: unknown) => {
-      console.error(
-        "[GitSyncService] Falha na sincronização periódica:",
-        error
-      );
-    });
-  }, intervalMs);
-}
+    return setInterval(() => {
+      void this.synchronize()
+        .then(async () => {
+          await onSynchronized?.();
+        })
+        .catch((error: unknown) => {
+          console.error(
+            "[GitSyncService] Falha na sincronização periódica:",
+            error
+          );
+        });
+    }, env.wiki.syncIntervalMs);
+  }
 
   private async repositoryExists(): Promise<boolean> {
     const gitDirectory = path.join(this.localPath, ".git");

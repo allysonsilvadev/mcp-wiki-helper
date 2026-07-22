@@ -6,6 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
+    "start:http": "node dist/http.js",
+    "dev:http": "tsx src/http.ts",
     "test:git-sync": "tsx src/scripts/test-git-sync.ts",
     "dev": "tsx src/index.ts",
     "inspect": "mcp-inspector tsx src/index.ts"

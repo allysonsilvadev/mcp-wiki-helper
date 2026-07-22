@@ -1,16 +1,25 @@
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+
 import { createServer } from "./server/server.js";
-import { GitSyncService } from "./services/git-sync.service.js";
+import {
+  gitSyncService,
+  wikiIndexService,
+} from "./services/services.js";
 
 async function main(): Promise<void> {
-  const gitSyncService = new GitSyncService();
-
-  // Atualiza a Wiki antes de iniciar o MCP.
   await gitSyncService.synchronize();
+  await wikiIndexService.rebuild();
 
-  // Continua atualizando a cada 30 minutos.
+  console.error(
+  `[MCP] Índice carregado com ${wikiIndexService.size()} documentos.`
+);
+
   const synchronizationInterval =
-    gitSyncService.startPeriodicSynchronization();
+    gitSyncService.startPeriodicSynchronization(
+      async () => {
+        await wikiIndexService.rebuild();
+      }
+    );
 
   const server = createServer();
   const transport = new StdioServerTransport();

@@ -1,9 +1,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { registerHelloTool } from "../tools/hello.tools.js";
+import { registerCheckTool } from "../tools/check.tools.js";
 import { registerListDocumentsTool } from "../tools/list-documents.tool.js";
-import { Server } from "node:http";
 import { registerReadDocumentTool } from "../tools/read-document.tool.js";
 import { registerSearchDocumentsTool } from "../tools/search-documents.tool.js";
+import { registerSearchContentTool } from "../tools/search-content.tool.js";
 
 export function createServer(): McpServer {
     const server = new McpServer({
@@ -11,11 +11,11 @@ export function createServer(): McpServer {
         version: "1.0.0",
     });
 
-    registerHelloTool(server);
+    registerCheckTool(server);
     registerListDocumentsTool(server);
     registerReadDocumentTool(server);
     registerSearchDocumentsTool(server);
+    registerSearchContentTool(server);
 
     return server;
 }
-
