@@ -4,6 +4,7 @@ import path from "node:path";
 import { promisify } from "node:util";
 
 import { env } from "../config/env.js";
+import { WikiChangesService } from "./wiki-changes.service.js";
 
 const execFileAsync = promisify(execFile);
 
@@ -11,13 +12,17 @@ export class GitSyncService {
   private readonly repositoryUrl: string;
   private readonly localPath: string;
   private readonly branch: string;
+  private readonly changesService: WikiChangesService;
 
   private isSynchronizing = false;
 
-  constructor() {
+  constructor(changesService?: WikiChangesService) {
     this.repositoryUrl = env.wiki.repositoryUrl;
     this.localPath = path.resolve(env.wiki.localPath);
     this.branch = env.wiki.branch;
+    this.changesService =
+      changesService ??
+      new WikiChangesService(this.localPath, this.branch);
   }
 
   public getLocalPath(): string {
@@ -43,9 +48,34 @@ export class GitSyncService {
 
     this.isSynchronizing = true;
 
+    let previousCommit: string | null = null;
+
     try {
+      try {
+        previousCommit =
+          await this.changesService.getCurrentCommit();
+      } catch {
+        this.changesService.recordSynchronizationError();
+        console.error(
+          "[GitSyncService] Não foi possível capturar o commit anterior da Wiki."
+        );
+      }
+
       await this.ensureRepositoryAvailable();
+
+      try {
+        await this.changesService.recordSuccessfulSynchronization(
+          previousCommit
+        );
+      } catch {
+        this.changesService.recordSynchronizationError();
+        console.error(
+          "[GitSyncService] Não foi possível registrar as mudanças da Wiki."
+        );
+      }
     } catch (error) {
+      this.changesService.recordSynchronizationError();
+
       console.error(
         "[GitSyncService] Não foi possível sincronizar a Wiki:",
         error

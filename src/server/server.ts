@@ -4,6 +4,8 @@ import { registerListDocumentsTool } from "../tools/list-documents.tool.js";
 import { registerReadDocumentTool } from "../tools/read-document.tool.js";
 import { registerSearchDocumentsTool } from "../tools/search-documents.tool.js";
 import { registerSearchContentTool } from "../tools/search-content.tool.js";
+import { registerGetSyncStatusTool } from "../tools/get-sync-status.tool.js";
+import { registerListRecentChangesTool } from "../tools/list-recent-changes.tool.js";
 
 export function createServer(): McpServer {
     const server = new McpServer({
@@ -16,6 +18,8 @@ export function createServer(): McpServer {
     registerReadDocumentTool(server);
     registerSearchDocumentsTool(server);
     registerSearchContentTool(server);
+    registerGetSyncStatusTool(server);
+    registerListRecentChangesTool(server);
 
     return server;
 }

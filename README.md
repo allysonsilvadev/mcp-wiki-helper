@@ -13,6 +13,8 @@ Ele sincroniza a Wiki, indexa os arquivos Markdown e oferece ferramentas para li
 | `search_documents` | Pesquisa pelo nome ou caminho do documento. |
 | `search_content` | Pesquisa dentro do conteúdo dos documentos. |
 | `read_document` | Lê um documento Markdown completo. |
+| `get_sync_status` | Informa o estado da última sincronização da Wiki. |
+| `list_recent_changes` | Lista documentos alterados na última sincronização. |
 
 ## Como funciona
 
@@ -50,7 +52,7 @@ Preencha o `.env`:
 WIKI_REPOSITORY_URL=git@github.com:empresa/wiki.git
 WIKI_LOCAL_PATH=./data/wiki
 WIKI_BRANCH=main
-WIKI_SYNC_INTERVAL_MS=1800000
+WIKI_SYNC_INTERVAL_MS=3600000
 
 MCP_HTTP_HOST=0.0.0.0
 MCP_HTTP_PORT=3000
@@ -214,6 +216,18 @@ Ler um documento:
 
 ```text
 Use read_document do wiki-helper para ler "caminho/documento.md" e faça um resumo.
+```
+
+Verificar a última sincronização:
+
+```text
+Use get_sync_status do wiki-helper e mostre o estado da sincronização da Wiki.
+```
+
+Listar mudanças recentes:
+
+```text
+Use list_recent_changes do wiki-helper para listar até 50 documentos alterados.
 ```
 
 ## Problemas comuns

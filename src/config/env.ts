@@ -38,7 +38,7 @@ export const env = {
     branch: process.env.WIKI_BRANCH ?? "main",
     syncIntervalMs: getPositiveNumberEnvironmentVariable(
       "WIKI_SYNC_INTERVAL_MS",
-      300_000
+      3_600_000
     )
   }
 };
